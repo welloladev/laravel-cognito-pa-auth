@@ -62,19 +62,19 @@ class CognitoClient
      * Checks if credentials of a user are valid.
      *
      * @see http://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminInitiateAuth.html
-     * @param string $email
+     * @param string $username
      * @param string $password
      * @return \Aws\Result|bool
      */
-    public function authenticate($email, $password)
+    public function authenticate($username, $password)
     {
         try {
             $response = $this->client->adminInitiateAuth([
                 'AuthFlow' => 'ADMIN_NO_SRP_AUTH',
                 'AuthParameters' => [
-                    'USERNAME' => $email,
+                    'USERNAME' => $username,
                     'PASSWORD' => $password,
-                    'SECRET_HASH' => $this->cognitoSecretHash($email),
+                    'SECRET_HASH' => $this->cognitoSecretHash($username),
                 ],
                 'ClientId' => $this->clientId,
                 'UserPoolId' => $this->poolId,
@@ -94,22 +94,20 @@ class CognitoClient
     /**
      * Registers a user in the given user pool.
      *
-     * @param $email
+     * @param $username
      * @param $password
      * @param array $attributes
      * @return bool
      */
-    public function register($email, $password, array $attributes = [])
+    public function register($username, $password, array $attributes = [])
     {
-        $attributes['email'] = $email;
-
         try {
             $response = $this->client->signUp([
                 'ClientId' => $this->clientId,
                 'Password' => $password,
-                'SecretHash' => $this->cognitoSecretHash($email),
+                'SecretHash' => $this->cognitoSecretHash($username),
                 'UserAttributes' => $this->formatAttributes($attributes),
-                'Username' => $email,
+                'Username' => $username,
             ]);
         } catch (CognitoIdentityProviderException $e) {
             if ($e->getAwsErrorCode() === self::USERNAME_EXISTS) {
@@ -187,7 +185,7 @@ class CognitoClient
     }
 
     /**
-     * Register a user and send them an email to set their password.
+     * Register a user and send them an username to set their password.
      * http://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminCreateUser.html.
      *
      * @param $username

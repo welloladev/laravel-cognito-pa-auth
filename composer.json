@@ -1,6 +1,6 @@
 {
-    "name": "black-bits/laravel-cognito-auth",
-    "description": "An auth provider for Laravel for AWS Cognito.",
+    "name": "4cme/laravel-cognito-auth",
+    "description": "An auth provider for Laravel for AWS Cognito",
     "keywords": [
         "BlackBits",
         "AWS Cognito",
