@@ -60,9 +60,9 @@ class CognitoAuthServiceProvider extends ServiceProvider
             return $guard;
         });
 
-        $this->loadRoutesFrom(__DIR__.'/routes.php');
-        $this->loadViewsFrom(__DIR__.'/Resources/views', 'black-bits/laravel-cognito-auth');
-        $this->loadTranslationsFrom(__DIR__.'/Resources/lang', 'black-bits/laravel-cognito-auth');
+//        $this->loadRoutesFrom(__DIR__.'/routes.php');
+//        $this->loadViewsFrom(__DIR__.'/Resources/views', 'black-bits/laravel-cognito-auth');
+//        $this->loadTranslationsFrom(__DIR__.'/Resources/lang', 'black-bits/laravel-cognito-auth');
     }
 
     public function register()
