@@ -17,22 +17,18 @@ class CognitoClient
     const INVALID_PASSWORD = 'InvalidPasswordException';
     const CODE_MISMATCH = 'CodeMismatchException';
     const EXPIRED_CODE = 'ExpiredCodeException';
-
     /**
      * @var CognitoIdentityProviderClient
      */
     protected $client;
-
     /**
      * @var string
      */
     protected $clientId;
-
     /**
      * @var string
      */
     protected $clientSecret;
-
     /**
      * @var string
      */
@@ -52,10 +48,10 @@ class CognitoClient
         $poolId
     )
     {
-        $this->client = $client;
-        $this->clientId = $clientId;
+        $this->client       = $client;
+        $this->clientId     = $clientId;
         $this->clientSecret = $clientSecret;
-        $this->poolId = $poolId;
+        $this->poolId       = $poolId;
     }
 
     /**
@@ -69,15 +65,18 @@ class CognitoClient
     public function authenticate($username, $password)
     {
         try {
+            $authParameters = [
+                'USERNAME' => $username,
+                'PASSWORD' => $password,
+            ];
+            if ($this->clientSecret) {
+                $authParameters['SECRET_HASH'] = $this->cognitoSecretHash($username);
+            }
             $response = $this->client->adminInitiateAuth([
-                'AuthFlow' => 'ADMIN_NO_SRP_AUTH',
-                'AuthParameters' => [
-                    'USERNAME' => $username,
-                    'PASSWORD' => $password,
-                    'SECRET_HASH' => $this->cognitoSecretHash($username),
-                ],
-                'ClientId' => $this->clientId,
-                'UserPoolId' => $this->poolId,
+                'AuthFlow'       => 'ADMIN_NO_SRP_AUTH',
+                'AuthParameters' => $authParameters,
+                'ClientId'       => $this->clientId,
+                'UserPoolId'     => $this->poolId,
             ]);
         } catch (CognitoIdentityProviderException $exception) {
             if ($exception->getAwsErrorCode() === self::RESET_REQUIRED ||
@@ -102,13 +101,16 @@ class CognitoClient
     public function register($username, $password, array $attributes = [])
     {
         try {
-            $response = $this->client->signUp([
-                'ClientId' => $this->clientId,
-                'Password' => $password,
-                'SecretHash' => $this->cognitoSecretHash($username),
+            $data = [
+                'ClientId'       => $this->clientId,
+                'Password'       => $password,
                 'UserAttributes' => $this->formatAttributes($attributes),
-                'Username' => $username,
-            ]);
+                'Username'       => $username,
+            ];
+            if ($this->clientSecret) {
+                $data['SecretHash'] = $this->cognitoSecretHash($username);
+            }
+            $response = $this->client->signUp($data);
         } catch (CognitoIdentityProviderException $e) {
             if ($e->getAwsErrorCode() === self::USERNAME_EXISTS) {
                 return false;
@@ -130,11 +132,14 @@ class CognitoClient
     public function sendResetLink($username)
     {
         try {
-            $result = $this->client->forgotPassword([
+            $data = [
                 'ClientId' => $this->clientId,
-                'SecretHash' => $this->cognitoSecretHash($username),
                 'Username' => $username,
-            ]);
+            ];
+            if ($this->clientSecret) {
+                $data['SecretHash'] = $this->cognitoSecretHash($username);
+            }
+            $result = $this->client->forgotPassword($data);
         } catch (CognitoIdentityProviderException $e) {
             if ($e->getAwsErrorCode() === self::USER_NOT_FOUND) {
                 return Password::INVALID_USER;
@@ -158,13 +163,16 @@ class CognitoClient
     public function resetPassword($code, $username, $password)
     {
         try {
-            $this->client->confirmForgotPassword([
-                'ClientId' => $this->clientId,
+            $data = [
+                'ClientId'         => $this->clientId,
                 'ConfirmationCode' => $code,
-                'Password' => $password,
-                'SecretHash' => $this->cognitoSecretHash($username),
-                'Username' => $username,
-            ]);
+                'Password'         => $password,
+                'Username'         => $username,
+            ];
+            if ($this->clientSecret) {
+                $data['SecretHash'] = $this->cognitoSecretHash($username);
+            }
+            $this->client->confirmForgotPassword($data);
         } catch (CognitoIdentityProviderException $e) {
             if ($e->getAwsErrorCode() === self::USER_NOT_FOUND) {
                 return Password::INVALID_USER;
@@ -194,17 +202,17 @@ class CognitoClient
      */
     public function inviteUser($username, array $attributes = [])
     {
-        $attributes['email'] = $username;
+        $attributes['email']          = $username;
         $attributes['email_verified'] = 'true';
 
         try {
             $this->client->AdminCreateUser([
-                'UserPoolId' => $this->poolId,
+                'UserPoolId'             => $this->poolId,
                 'DesiredDeliveryMediums' => [
                     'EMAIL',
                 ],
-                'Username' => $username,
-                'UserAttributes' => $this->formatAttributes($attributes),
+                'Username'               => $username,
+                'UserAttributes'         => $this->formatAttributes($attributes),
             ]);
         } catch (CognitoIdentityProviderException $e) {
             if ($e->getAwsErrorCode() === self::USERNAME_EXISTS) {
@@ -229,16 +237,22 @@ class CognitoClient
     public function confirmPassword($username, $password, $session)
     {
         try {
+
+            $challengeReponses = [
+                'NEW_PASSWORD' => $password,
+                'USERNAME'     => $username,
+            ];
+
+            if ($this->clientSecret) {
+                $challengeReponses['SECRET_HASH'] = $this->cognitoSecretHash($username);
+            }
+
             $this->client->AdminRespondToAuthChallenge([
-                'ClientId' => $this->clientId,
-                'UserPoolId' => $this->poolId,
-                'Session' => $session,
-                'ChallengeResponses' => [
-                    'NEW_PASSWORD' => $password,
-                    'USERNAME' => $username,
-                    'SECRET_HASH' => $this->cognitoSecretHash($username),
-                ],
-                'ChallengeName' => 'NEW_PASSWORD_REQUIRED',
+                'ClientId'           => $this->clientId,
+                'UserPoolId'         => $this->poolId,
+                'Session'            => $session,
+                'ChallengeResponses' => $challengeReponses,
+                'ChallengeName'      => 'NEW_PASSWORD_REQUIRED',
             ]);
         } catch (CognitoIdentityProviderException $e) {
             if ($e->getAwsErrorCode() === self::CODE_MISMATCH || $e->getAwsErrorCode() === self::EXPIRED_CODE) {
@@ -261,7 +275,7 @@ class CognitoClient
         if (config('cognito.delete_user')) {
             $this->client->adminDeleteUser([
                 'UserPoolId' => $this->poolId,
-                'Username' => $username,
+                'Username'   => $username,
             ]);
         }
     }
@@ -280,9 +294,9 @@ class CognitoClient
     {
         try {
             $this->client->adminSetUserPassword([
-                'Password' => $password,
-                'Permanent' => $permanent,
-                'Username' => $username,
+                'Password'   => $password,
+                'Permanent'  => $permanent,
+                'Username'   => $username,
                 'UserPoolId' => $this->poolId,
             ]);
         } catch (CognitoIdentityProviderException $e) {
@@ -304,7 +318,7 @@ class CognitoClient
     {
         $this->client->adminResetUserPassword([
             'UserPoolId' => $this->poolId,
-            'Username' => $username,
+            'Username'   => $username,
         ]);
     }
 
@@ -312,19 +326,22 @@ class CognitoClient
     {
         $this->client->adminConfirmSignUp([
             'UserPoolId' => $this->poolId,
-            'Username' => $username,
+            'Username'   => $username,
         ]);
     }
 
     public function confirmUserSignUp($username, $confirmationCode)
     {
         try {
-            $this->client->confirmSignUp([
-                'ClientId' => $this->clientId,
-                'SecretHash' => $this->cognitoSecretHash($username),
-                'Username' => $username,
+            $data = [
+                'ClientId'         => $this->clientId,
+                'Username'         => $username,
                 'ConfirmationCode' => $confirmationCode,
-            ]);
+            ];
+            if ($this->clientSecret) {
+                $data['SecretHash'] = $this->cognitoSecretHash($username);
+            }
+            $this->client->confirmSignUp($data);
         } catch (CognitoIdentityProviderException $e) {
             if ($e->getAwsErrorCode() === self::USER_NOT_FOUND) {
                 return 'validation.invalid_user';
@@ -334,7 +351,7 @@ class CognitoClient
                 return 'validation.invalid_token';
             }
 
-            if ($e->getAwsErrorCode() === 'NotAuthorizedException' AND $e->getAwsErrorMessage() === 'User cannot be confirmed. Current status is CONFIRMED') {
+            if ($e->getAwsErrorCode() === 'NotAuthorizedException' and $e->getAwsErrorMessage() === 'User cannot be confirmed. Current status is CONFIRMED') {
                 return 'validation.confirmed';
             }
 
@@ -349,11 +366,15 @@ class CognitoClient
     public function resendToken($username)
     {
         try {
-            $this->client->resendConfirmationCode([
-                'ClientId' => $this->clientId,
+            $data = [
+                'ClientId'   => $this->clientId,
                 'SecretHash' => $this->cognitoSecretHash($username),
-                'Username' => $username
-            ]);
+                'Username'   => $username,
+            ];
+            if ($this->clientSecret) {
+                $data['SecretHash'] = $this->cognitoSecretHash($username);
+            }
+            $this->client->resendConfirmationCode($data);
         } catch (CognitoIdentityProviderException $e) {
 
             if ($e->getAwsErrorCode() === self::USER_NOT_FOUND) {
@@ -385,8 +406,8 @@ class CognitoClient
     public function setUserAttributes($username, array $attributes)
     {
         $this->client->AdminUpdateUserAttributes([
-            'Username' => $username,
-            'UserPoolId' => $this->poolId,
+            'Username'       => $username,
+            'UserPoolId'     => $this->poolId,
             'UserAttributes' => $this->formatAttributes($attributes),
         ]);
 
@@ -432,7 +453,7 @@ class CognitoClient
     {
         try {
             $user = $this->client->AdminGetUser([
-                'Username' => $username,
+                'Username'   => $username,
                 'UserPoolId' => $this->poolId,
             ]);
         } catch (CognitoIdentityProviderException $e) {
@@ -454,7 +475,7 @@ class CognitoClient
 
         foreach ($attributes as $key => $value) {
             $userAttributes[] = [
-                'Name' => $key,
+                'Name'  => $key,
                 'Value' => $value,
             ];
         }
