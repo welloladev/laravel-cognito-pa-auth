@@ -1,5 +1,5 @@
 {
-    "name": "4cme/laravel-cognito-auth",
+    "name": "welloladev/laravel-cognito-pa-auth",
     "description": "An auth provider for Laravel for AWS Cognito",
     "keywords": [
         "BlackBits",
@@ -42,12 +42,12 @@
     },
     "autoload": {
         "psr-4": {
-            "BlackBits\\LaravelCognitoAuth\\": "src"
+            "Wellola\\PALaravelCognitoAuth\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "BlackBits\\LaravelCognitoAuth\\Tests\\": "tests"
+            "Wellola\\PALaravelCognitoAuth\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -61,7 +61,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "BlackBits\\LaravelCognitoAuth\\CognitoAuthServiceProvider"
+                "Wellola\\PALaravelCognitoAuth\\CognitoAuthServiceProvider"
             ]
         }
     }

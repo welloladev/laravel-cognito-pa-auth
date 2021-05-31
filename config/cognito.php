@@ -3,14 +3,14 @@
 return [
     // AWS Settings
     'credentials'       => [
-        'key'    => env('AWS_COGNITO_KEY', ''),
-        'secret' => env('AWS_COGNITO_SECRET', ''),
+        'key'    => env('PA_AWS_COGNITO_KEY', ''),
+        'secret' => env('PA_AWS_COGNITO_SECRET', ''),
     ],
-    'region'            => env('AWS_COGNITO_REGION', 'us-east-1'),
-    'version'           => env('AWS_COGNITO_VERSION', 'latest'),
-    'app_client_id'     => env('AWS_COGNITO_CLIENT_ID', ''),
-    'app_client_secret' => env('AWS_COGNITO_CLIENT_SECRET', ''),
-    'user_pool_id'      => env('AWS_COGNITO_USER_POOL_ID', ''),
+    'region'            => env('PA_AWS_COGNITO_REGION', 'eu-west-1'),
+    'version'           => env('PA_AWS_COGNITO_VERSION', 'latest'),
+    'app_client_id'     => env('PA_AWS_COGNITO_CLIENT_ID', ''),
+    'app_client_secret' => env('PA_AWS_COGNITO_CLIENT_SECRET', ''),
+    'user_pool_id'      => env('PA_AWS_COGNITO_USER_POOL_ID', ''),
 
     // package configuration
     'use_sso'           => env('USE_SSO', false),
@@ -19,5 +19,5 @@ return [
         'email',
     ],
     'sso_user_model'        => 'App\User',
-    'delete_user'           => env('AWS_COGNITO_DELETE_USER', false),
+    'delete_user'           => env('PA_AWS_COGNITO_DELETE_USER', false),
 ];
