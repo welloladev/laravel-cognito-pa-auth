@@ -1,10 +1,10 @@
 <?php
 
-namespace BlackBits\LaravelCognitoAuth\Auth;
+namespace Wellola\PALaravelCognitoAuth\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
-use BlackBits\LaravelCognitoAuth\CognitoClient;
+use Wellola\PALaravelCognitoAuth\CognitoClient;
 use Illuminate\Foundation\Auth\ResetsPasswords as BaseResetsPasswords;
 
 trait ResetsPasswords

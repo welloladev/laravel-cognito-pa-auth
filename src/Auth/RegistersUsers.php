@@ -1,11 +1,11 @@
 <?php
 
-namespace BlackBits\LaravelCognitoAuth\Auth;
+namespace Wellola\PALaravelCognitoAuth\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Registered;
-use BlackBits\LaravelCognitoAuth\CognitoClient;
-use BlackBits\LaravelCognitoAuth\Exceptions\InvalidUserFieldException;
+use Wellola\PALaravelCognitoAuth\CognitoClient;
+use Wellola\PALaravelCognitoAuth\Exceptions\InvalidUserFieldException;
 use Illuminate\Foundation\Auth\RegistersUsers as BaseSendsRegistersUsers;
 
 trait RegistersUsers

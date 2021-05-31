@@ -1,10 +1,10 @@
 <?php
 
-namespace BlackBits\LaravelCognitoAuth\Auth;
+namespace Wellola\PALaravelCognitoAuth\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use BlackBits\LaravelCognitoAuth\Exceptions\NoLocalUserException;
+use Wellola\PALaravelCognitoAuth\Exceptions\NoLocalUserException;
 use Aws\CognitoIdentityProvider\Exception\CognitoIdentityProviderException;
 use Illuminate\Foundation\Auth\AuthenticatesUsers as BaseAuthenticatesUsers;
 

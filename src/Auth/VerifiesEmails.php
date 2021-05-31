@@ -1,9 +1,9 @@
 <?php
 
-namespace BlackBits\LaravelCognitoAuth\Auth;
+namespace Wellola\PALaravelCognitoAuth\Auth;
 
 use Illuminate\Http\Request;
-use BlackBits\LaravelCognitoAuth\CognitoClient;
+use Wellola\PALaravelCognitoAuth\CognitoClient;
 use Illuminate\Foundation\Auth\VerifiesEmails as BaseVerifiesEmails;
 
 trait VerifiesEmails
