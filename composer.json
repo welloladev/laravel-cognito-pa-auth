@@ -61,7 +61,7 @@
     "extra": {
         "laravel": {
             "providers": [
-              "PACognitoAuthServiceProvider"
+              "Wellola\\PALaravelCognitoAuth\\PACognitoAuthServiceProvider"
             ]
         }
     }
