@@ -11,7 +11,7 @@ use Illuminate\Contracts\Auth\StatefulGuard;
 use Symfony\Component\HttpFoundation\Request;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Wellola\PALaravelCognitoAuth\PACognitoClient;
-use Wellola\PALaravelCognitoAuth\Exceptions\InvalidUserModelException;
+use Wellola\PALaravelCognitoAuth\Exceptions\PAInvalidUserModelException;
 
 class PACognitoGuard extends SessionGuard implements StatefulGuard
 {
@@ -43,7 +43,7 @@ class PACognitoGuard extends SessionGuard implements StatefulGuard
      * @param mixed $user
      * @param array $credentials
      * @return bool
-     * @throws InvalidUserModelException
+     * @throws PAInvalidUserModelException
      */
     protected function hasValidCredentials($user, $credentials)
     {
@@ -65,7 +65,7 @@ class PACognitoGuard extends SessionGuard implements StatefulGuard
     /**
      * @param $email
      * @return Model
-     * @throws InvalidUserModelException
+     * @throws PAInvalidUserModelException
      */
     private function createUser($email)
     {
@@ -78,7 +78,7 @@ class PACognitoGuard extends SessionGuard implements StatefulGuard
         $user = new $userModel;
 
         if (! $user instanceof Model) {
-            throw new InvalidUserModelException('User model does not extend Eloquent Model class.');
+            throw new PAInvalidUserModelException('User model does not extend Eloquent Model class.');
         }
 
         foreach ($userAttributes as $userAttribute) {

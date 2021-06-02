@@ -2,6 +2,6 @@
 
 namespace Wellola\PALaravelCognitoAuth\Exceptions;
 
-class NoLocalUserException extends \Exception
+class PAPasswordResetRequiredException extends \Exception
 {
 }

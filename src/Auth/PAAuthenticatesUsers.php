@@ -4,7 +4,7 @@ namespace Wellola\PALaravelCognitoAuth\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Wellola\PALaravelCognitoAuth\Exceptions\NoLocalUserException;
+use Wellola\PALaravelCognitoAuth\Exceptions\PANoLocalUserException;
 use Aws\CognitoIdentityProvider\Exception\CognitoIdentityProviderException;
 use Illuminate\Foundation\Auth\AuthenticatesUsers as BaseAuthenticatesUsers;
 
@@ -22,7 +22,7 @@ trait PAAuthenticatesUsers
     {
         try {
             $response = $this->guard()->attempt($this->credentials($request), $request->has('remember'));
-        } catch (NoLocalUserException $e) {
+        } catch (PANoLocalUserException $e) {
             $response = $this->createLocalUser($this->credentials($request));
         }
 

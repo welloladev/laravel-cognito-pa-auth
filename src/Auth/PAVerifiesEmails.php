@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Wellola\PALaravelCognitoAuth\PACognitoClient;
 use Illuminate\Foundation\Auth\VerifiesEmails as BaseVerifiesEmails;
 
-trait VerifiesEmails
+trait PAVerifiesEmails
 {
     use BaseVerifiesEmails;
 

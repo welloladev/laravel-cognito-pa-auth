@@ -2,6 +2,6 @@
 
 namespace Wellola\PALaravelCognitoAuth\Exceptions;
 
-class PasswordResetRequiredException extends \Exception
+class PAInvalidUserFieldException extends \Exception
 {
 }

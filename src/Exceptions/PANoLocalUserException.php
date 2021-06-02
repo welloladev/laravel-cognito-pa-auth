@@ -2,6 +2,6 @@
 
 namespace Wellola\PALaravelCognitoAuth\Exceptions;
 
-class InvalidUserFieldException extends \Exception
+class PANoLocalUserException extends \Exception
 {
 }

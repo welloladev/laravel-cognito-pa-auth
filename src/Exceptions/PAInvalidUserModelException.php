@@ -2,6 +2,6 @@
 
 namespace Wellola\PALaravelCognitoAuth\Exceptions;
 
-class UserNotConfirmedException extends \Exception
+class PAInvalidUserModelException extends \Exception
 {
 }

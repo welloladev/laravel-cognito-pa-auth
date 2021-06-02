@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Password;
 use Wellola\PALaravelCognitoAuth\PACognitoClient;
 use Illuminate\Foundation\Auth\ResetsPasswords as BaseResetsPasswords;
 
-trait ResetsPasswords
+trait PAResetsPasswords
 {
     use BaseResetsPasswords;
 

@@ -45,16 +45,6 @@
             "Wellola\\PALaravelCognitoAuth\\": "src"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "Wellola\\PALaravelCognitoAuth\\Tests\\": "tests"
-        }
-    },
-    "scripts": {
-        "test": "vendor/bin/phpunit",
-        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
-
-    },
     "config": {
         "sort-packages": true
     },

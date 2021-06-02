@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Password;
 use Wellola\PALaravelCognitoAuth\PACognitoClient;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails as BaseSendsPasswordResetEmails;
 
-trait SendsPasswordResetEmails
+trait PASendsPasswordResetEmails
 {
     use BaseSendsPasswordResetEmails;
 
