@@ -8,7 +8,7 @@ use Wellola\PALaravelCognitoAuth\Exceptions\NoLocalUserException;
 use Aws\CognitoIdentityProvider\Exception\CognitoIdentityProviderException;
 use Illuminate\Foundation\Auth\AuthenticatesUsers as BaseAuthenticatesUsers;
 
-trait AuthenticatesUsers
+trait PAAuthenticatesUsers
 {
     use BaseAuthenticatesUsers;
 

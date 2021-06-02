@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Password;
 use Aws\CognitoIdentityProvider\CognitoIdentityProviderClient;
 use Aws\CognitoIdentityProvider\Exception\CognitoIdentityProviderException;
 
-class CognitoClient
+class PACognitoClient
 {
     const NEW_PASSWORD_CHALLENGE = 'NEW_PASSWORD_REQUIRED';
     const FORCE_PASSWORD_STATUS = 'FORCE_CHANGE_PASSWORD';

@@ -10,27 +10,27 @@ use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Symfony\Component\HttpFoundation\Request;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Wellola\PALaravelCognitoAuth\CognitoClient;
+use Wellola\PALaravelCognitoAuth\PACognitoClient;
 use Wellola\PALaravelCognitoAuth\Exceptions\InvalidUserModelException;
 
-class CognitoGuard extends SessionGuard implements StatefulGuard
+class PACognitoGuard extends SessionGuard implements StatefulGuard
 {
     /**
-     * @var CognitoClient
+     * @var PACognitoClient
      */
     protected $client;
 
     /**
      * CognitoGuard constructor.
      * @param string $name
-     * @param CognitoClient $client
+     * @param PACognitoClient $client
      * @param UserProvider $provider
      * @param Session $session
      * @param null|Request $request
      */
     public function __construct(
         string $name,
-        CognitoClient $client,
+        PACognitoClient $client,
         UserProvider $provider,
         Session $session,
         ?Request $request = null
@@ -51,7 +51,7 @@ class CognitoGuard extends SessionGuard implements StatefulGuard
         $result = $this->client->authenticate($credentials['email'], $credentials['password']);
 
         // Only create the user if single sign on is activated in the project
-        if (config('cognito.use_sso') && $result !== false && $user === null) {
+        if (config('cognito.pa.use_sso') && $result !== false && $user === null) {
             $user = $this->createUser($credentials['email']);
         }
 
@@ -72,8 +72,8 @@ class CognitoGuard extends SessionGuard implements StatefulGuard
         /** @var Result $userResult */
         $userResult = $this->client->getUser($email);
         $userAttributes = count($userResult->get('UserAttributes')) > 0 ? $userResult->get('UserAttributes') : [];
-        $userFields = config('cognito.sso_user_fields');
-        $userModel = config('cognito.sso_user_model');
+        $userFields = config('cognito.pa.sso_user_fields');
+        $userModel = config('cognito.pa.sso_user_model');
         /** @var Model $user */
         $user = new $userModel;
 

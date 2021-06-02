@@ -3,7 +3,7 @@
 namespace Wellola\PALaravelCognitoAuth\Auth;
 
 use Illuminate\Http\Request;
-use Wellola\PALaravelCognitoAuth\CognitoClient;
+use Wellola\PALaravelCognitoAuth\PACognitoClient;
 use Illuminate\Foundation\Auth\VerifiesEmails as BaseVerifiesEmails;
 
 trait VerifiesEmails
@@ -33,7 +33,7 @@ trait VerifiesEmails
     {
         $request->validate(['email' => 'required|email', 'confirmation_code' => 'required|numeric']);
 
-        $response = app()->make(CognitoClient::class)->confirmUserSignUp($request->email, $request->confirmation_code);
+        $response = app()->make(PACognitoClient::class)->confirmUserSignUp($request->email, $request->confirmation_code);
 
         if ($response == 'validation.invalid_user') {
             return redirect()->back()
@@ -71,7 +71,7 @@ trait VerifiesEmails
     {
         $request->validate(['email' => 'required|email']);
 
-        $response = app()->make(CognitoClient::class)->resendToken($request->email);
+        $response = app()->make(PACognitoClient::class)->resendToken($request->email);
 
         if ($response == 'validation.invalid_user') {
             return response()->json(['error' => trans('black-bits/laravel-cognito-auth::validation.invalid_user')], 400);

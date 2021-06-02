@@ -5,10 +5,10 @@ namespace Wellola\PALaravelCognitoAuth;
 use Illuminate\Support\Arr;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
-use Wellola\PALaravelCognitoAuth\Auth\CognitoGuard;
+use Wellola\PALaravelCognitoAuth\Auth\PACognitoGuard;
 use Aws\CognitoIdentityProvider\CognitoIdentityProviderClient;
 
-class CognitoAuthServiceProvider extends ServiceProvider
+class PACognitoAuthServiceProvider extends ServiceProvider
 {
     public function boot()
     {
@@ -24,30 +24,30 @@ class CognitoAuthServiceProvider extends ServiceProvider
             __DIR__.'/Resources/lang' => resource_path('lang/vendor/black-bits/laravel-cognito-auth'),
         ], 'lang');
 
-        $this->app->singleton(CognitoClient::class, function (Application $app) {
+        $this->app->singleton(PACognitoClient::class, function (Application $app) {
             $config = [
-                'region'      => config('cognito.region'),
-                'version'     => config('cognito.version'),
+                'region'      => config('cognito.pa.region'),
+                'version'     => config('cognito.pa.version'),
             ];
 
-            $credentials = config('cognito.credentials');
+            $credentials = config('cognito.pa.credentials');
 
             if (! empty($credentials['key']) && ! empty($credentials['secret'])) {
                 $config['credentials'] = Arr::only($credentials, ['key', 'secret', 'token']);
             }
 
-            return new CognitoClient(
+            return new PACognitoClient(
                 new CognitoIdentityProviderClient($config),
-                config('cognito.app_client_id'),
-                config('cognito.app_client_secret'),
-                config('cognito.user_pool_id')
+                config('cognito.pa.app_client_id'),
+                config('cognito.pa.app_client_secret'),
+                config('cognito.pa.user_pool_id')
             );
         });
 
         $this->app['auth']->extend('cognito', function (Application $app, $name, array $config) {
-            $guard = new CognitoGuard(
+            $guard = new PACognitoGuard(
                 $name,
-                $client = $app->make(CognitoClient::class),
+                $client = $app->make(PACognitoClient::class),
                 $app['auth']->createUserProvider($config['provider']),
                 $app['session.store'],
                 $app['request']

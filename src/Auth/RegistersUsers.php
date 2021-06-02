@@ -4,7 +4,7 @@ namespace Wellola\PALaravelCognitoAuth\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Registered;
-use Wellola\PALaravelCognitoAuth\CognitoClient;
+use Wellola\PALaravelCognitoAuth\PACognitoClient;
 use Wellola\PALaravelCognitoAuth\Exceptions\InvalidUserFieldException;
 use Illuminate\Foundation\Auth\RegistersUsers as BaseSendsRegistersUsers;
 
@@ -35,7 +35,7 @@ trait RegistersUsers
             }
         }
 
-        app()->make(CognitoClient::class)->register($request->email, $request->password, $attributes);
+        app()->make(PACognitoClient::class)->register($request->email, $request->password, $attributes);
 
         event(new Registered($user = $this->create($request->all())));
 

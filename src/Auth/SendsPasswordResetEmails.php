@@ -4,7 +4,7 @@ namespace Wellola\PALaravelCognitoAuth\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
-use Wellola\PALaravelCognitoAuth\CognitoClient;
+use Wellola\PALaravelCognitoAuth\PACognitoClient;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails as BaseSendsPasswordResetEmails;
 
 trait SendsPasswordResetEmails
@@ -21,7 +21,7 @@ trait SendsPasswordResetEmails
     {
         $this->validateEmail($request);
 
-        $response = app()->make(CognitoClient::class)->sendResetLink($request->email);
+        $response = app()->make(PACognitoClient::class)->sendResetLink($request->email);
 
         if ($response == Password::RESET_LINK_SENT) {
             return redirect(route('cognito.password-reset'));

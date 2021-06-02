@@ -4,7 +4,7 @@ namespace Wellola\PALaravelCognitoAuth\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
-use Wellola\PALaravelCognitoAuth\CognitoClient;
+use Wellola\PALaravelCognitoAuth\PACognitoClient;
 use Illuminate\Foundation\Auth\ResetsPasswords as BaseResetsPasswords;
 
 trait ResetsPasswords
@@ -21,11 +21,11 @@ trait ResetsPasswords
     {
         $this->validate($request, $this->rules(), $this->validationErrorMessages());
 
-        $client = app()->make(CognitoClient::class);
+        $client = app()->make(PACognitoClient::class);
 
         $user = $client->getUser($request->email);
 
-        if ($user['UserStatus'] == CognitoClient::FORCE_PASSWORD_STATUS) {
+        if ($user['UserStatus'] == PACognitoClient::FORCE_PASSWORD_STATUS) {
             $response = $this->forceNewPassword($request);
         } else {
             $response = $client->resetPassword($request->token, $request->email, $request->password);
@@ -44,7 +44,7 @@ trait ResetsPasswords
      */
     private function forceNewPassword($request)
     {
-        $client = app()->make(CognitoClient::class);
+        $client = app()->make(PACognitoClient::class);
         $login = $client->authenticate($request->email, $request->token);
 
         return $client->confirmPassword($request->email, $request->password, $login->get('Session'));

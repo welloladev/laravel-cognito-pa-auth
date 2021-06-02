@@ -2,18 +2,18 @@
 
 namespace Wellola\PALaravelCognitoAuth;
 
-class CognitoUserPropertyAccessor
+class PACognitoUserPropertyAccessor
 {
     /**
-     * @var CognitoClient
+     * @var PACognitoClient
      */
     protected $cognitoClient;
 
     /**
      * CognitoUserPropertyAccessor constructor.
-     * @param CognitoClient $cognitoClient
+     * @param PACognitoClient $cognitoClient
      */
-    public function __construct(CognitoClient $cognitoClient)
+    public function __construct(PACognitoClient $cognitoClient)
     {
         $this->cognitoClient = $cognitoClient;
     }
